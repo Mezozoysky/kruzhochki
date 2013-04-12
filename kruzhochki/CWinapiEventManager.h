@@ -23,6 +23,9 @@ namespace kruz
     void removeAllEventHandlers();
 
   private:
+    // Passes event to all the eventHandlers.
+    void raiseEvent(const Event& event);
+
     friend class CWinapiRoot; //For calling processWinapiEvent() from CWinapiRoot.run() (main loop)
     // Converts WinAPI event into Kruzhochki event and passes it to each linked eventHandler.
     void processWinapiEvent(UINT msg, WPARAM wParam, LPARAM lParam);
