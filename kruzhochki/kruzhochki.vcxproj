@@ -76,6 +76,8 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="CGameStateManager.cpp" />
+    <ClCompile Include="IntroState.cpp" />
+    <ClCompile Include="KruzhochkiState.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="CWinapiRoot.cpp" />
     <ClCompile Include="CWinapiEventManager.cpp" />
@@ -83,17 +85,20 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="CGameStateManager.h" />
+    <ClInclude Include="Config.h" />
     <ClInclude Include="Event.h" />
     <ClInclude Include="IEventHandler.h" />
     <ClInclude Include="IEventManager.h" />
     <ClInclude Include="IGameState.h" />
     <ClInclude Include="IGfxManager.h" />
+    <ClInclude Include="IntroState.h" />
     <ClInclude Include="IRoot.h" />
     <ClInclude Include="IGameStateManager.h" />
     <ClInclude Include="Kruzhochki.h" />
     <ClInclude Include="CWinapiRoot.h" />
     <ClInclude Include="CWinapiEventManager.h" />
     <ClInclude Include="COpenglGfxManager.h" />
+    <ClInclude Include="KruzhochkiState.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
