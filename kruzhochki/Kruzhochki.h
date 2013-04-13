@@ -1,6 +1,7 @@
 #ifndef KRUZHOCHKI_KRUZHOCHKI_H
 #define KRUZHOCHKI_KRUZHOCHKI_H
 
+#include "Config.h"
 #include "IRoot.h"
 #include "IGameStateManager.h"
 #include "IGameState.h"
