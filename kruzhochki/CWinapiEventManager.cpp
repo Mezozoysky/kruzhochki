@@ -8,7 +8,7 @@ namespace kruz
   CWinapiEventManager::CWinapiEventManager() :
     mEventHandlers(NULL)
   {
-    mEventHandlers = new std::set<IEventHandler*>();
+    mEventHandlers = new std::list<IEventHandler*>();
   }
 
 
@@ -25,7 +25,7 @@ namespace kruz
   {
     if (handler && mEventHandlers)
     {
-      mEventHandlers->insert(handler);
+      mEventHandlers->push_back(handler);
     }
   }
 
@@ -33,7 +33,16 @@ namespace kruz
   {
     if (handler && mEventHandlers)
     {
-      mEventHandlers->erase(handler);
+      auto it = mEventHandlers->begin();
+      while (it != mEventHandlers->end())
+      {
+        if ((*it) == handler)
+        {
+          break;
+        }
+        ++it;
+      }
+      mEventHandlers->erase(it);
     }
   }
 
@@ -47,7 +56,9 @@ namespace kruz
   
   void CWinapiEventManager::raiseEvent(const Event& event)
   {
-    for (std::set<IEventHandler*>::iterator it = mEventHandlers->begin(); it != mEventHandlers->end(); ++it)
+    std::list<IEventHandler*> tmp((*mEventHandlers));
+    kruzDebug("Raising the event!");
+    for (auto it = tmp.begin(); it != tmp.end(); ++it)
     {
       (*it)->handleEvent(event);
     }

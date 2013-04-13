@@ -1,9 +1,9 @@
 #ifndef KRUZHOCHKI_CWINAPIEVENTMANAGER_H
 #define KRUZHOCHKI_CWINAPIEVENTMANAGER_H
 
-#include "IEventManager.h"
+#include "Kruzhochki.h"
 #include <windows.h>
-#include <set>
+#include <list>
 
 namespace kruz
 {
@@ -31,7 +31,7 @@ namespace kruz
     void processWinapiEvent(UINT msg, WPARAM wParam, LPARAM lParam);
 
   private:
-    std::set<IEventHandler*>* mEventHandlers;
+    std::list<IEventHandler*>* mEventHandlers;
   };
 
 } // namespace kruz
