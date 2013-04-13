@@ -7,6 +7,7 @@
 #include "COpenglGfxManager.h"
 #include "IntroState.h"
 #include "KruzhochkiState.h"
+#include "MainMenuState.h"
 #include <iostream>
 #include <fstream>
 
@@ -36,11 +37,15 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
     gfxManager
   );
 
-  IGameState* introState = new IntroState("intro", root);
+  IGameState* introState = new IntroState(root, "intro");
   root->getStateManager()->registerState(introState);
   root->getStateManager()->setStartState(introState->getName());
-  IGameState* kruzhochkiState = new KruzhochkiState("kruzhochki", root);
+
+  IGameState* kruzhochkiState = new KruzhochkiState(root, "kruzhochki");
   root->getStateManager()->registerState(kruzhochkiState);
+
+  IGameState* mainMenuState = new MainMenuState(root, "main-menu");
+  root->getStateManager()->registerState(mainMenuState);
 
 
   int errorCode = root->run();

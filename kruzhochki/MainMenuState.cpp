@@ -1,48 +1,46 @@
-#include "IntroState.h"
-#include <iostream>
+#include "MainMenuState.h"
 
-using namespace std;
 using namespace kruz;
+using namespace std;
 
-IntroState::IntroState(IRoot* root, const string& name) :
-  mName(name),
-  mRoot(root)
+MainMenuState::MainMenuState(IRoot* root, const string& name) :
+  mRoot(root),
+  mName(name)
 {
 }
 
-
-IntroState::~IntroState()
+MainMenuState::~MainMenuState(void)
 {
 }
 
-string IntroState::getName() const
+string MainMenuState::getName() const
 {
   return mName;
 }
 
-void IntroState::activate()
+void MainMenuState::activate()
 {
   mRoot->getEventManager()->addEventHandler(this);
   kruzDebug(mName << ": Activated.");
 }
 
-void IntroState::deactivate()
+void MainMenuState::deactivate()
 {
   mRoot->getEventManager()->removeEventHandler(this);
   kruzDebug(mName << ": Deactivated.");
 }
 
-void IntroState::pause()
+void MainMenuState::pause()
 {
   kruzDebug(mName << ": Paused.");
 }
 
-void IntroState::resume()
+void MainMenuState::resume()
 {
   kruzDebug(mName << ": Resumed.");
 }
 
-void IntroState::handleEvent(const Event& event)
+void MainMenuState::handleEvent(const Event& event)
 {
   if (event.type == ET_SYSTEM_EVENT)
   {
@@ -57,18 +55,23 @@ void IntroState::handleEvent(const Event& event)
   {
     if (event.mouseInput.input == MI_LEFT_PRESSED)
     {
-      kruzDebug(mName << ": Left mouse button is pressed. Starting the game.");
-      mRoot->getStateManager()->changeState("kruzhochki");
+      kruzDebug(mName << ": Left mouse button is pressed. Resume the game.");
+      mRoot->getStateManager()->popState();
+    }
+    if (event.mouseInput.input == MI_RIGHT_PRESSED)
+    {
+      kruzDebug(mName << ": Right button is pressed. Exit the game.");
+      mRoot->terminate(0);
     }
   }
 }
 
-void IntroState::update()
+void MainMenuState::update()
 {
   //TODO: Create and/or move the circles
 }
 
-void IntroState::render()
+void MainMenuState::render()
 {
   //TODO: Draw all we need with Gfx Manager
 }

@@ -11,7 +11,7 @@ class IntroState :
   public IGameState
 {
 public:
-  IntroState(const string& name, IRoot* root);
+  IntroState(IRoot* root, const string& name);
   ~IntroState();
 
   string getName() const;

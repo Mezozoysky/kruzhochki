@@ -1,5 +1,5 @@
-#ifndef KRUZHOCHKI_KRUZHOCHKISTATE_H
-#define KRUZHOCHKI_KRUZHOCHKISTATE_H
+#ifndef KRUZHOCHKI_MAINMENUSTATE_H
+#define KRUZHOCHKI_MAINMENUSTATE_H
 
 #include "Kruzhochki.h"
 #include <string>
@@ -7,12 +7,12 @@
 using namespace kruz;
 using namespace std;
 
-class KruzhochkiState :
+class MainMenuState :
   public IGameState
 {
 public:
-  KruzhochkiState(IRoot* root, const string& name);
-  ~KruzhochkiState();
+  MainMenuState(IRoot* root, const string& name);
+  ~MainMenuState();
 
   string getName() const;
 
@@ -27,9 +27,8 @@ public:
   void render();
 
 private:
-  string mName;
   IRoot* mRoot;
-  bool mIsPaused;
+  string mName;
 };
 
-#endif // KRUZHOCHKI_KRUZHOCHKISTATE_H
+#endif // KRUZHOCHKI_MAINMENUSTATE_H

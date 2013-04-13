@@ -4,9 +4,10 @@
 using namespace kruz;
 using namespace std;
 
-KruzhochkiState::KruzhochkiState(const string& name, IRoot* root) :
+KruzhochkiState::KruzhochkiState(IRoot* root, const string& name) :
+  mRoot(root),
   mName(name),
-  mRoot(root)
+  mIsPaused(false)
 {
 }
 
@@ -23,20 +24,27 @@ string KruzhochkiState::getName() const
 void KruzhochkiState::activate()
 {
   mRoot->getEventManager()->addEventHandler(this);
-  //TODO: Write/draw something
+  kruzDebug(mName << ": Activated.");
 }
 
 void KruzhochkiState::deactivate()
 {
   mRoot->getEventManager()->removeEventHandler(this);
+  kruzDebug(mName << ": Deactivated.");
 }
 
 void KruzhochkiState::pause()
 {
+  mIsPaused = true;
+  mRoot->getEventManager()->removeEventHandler(this);
+  kruzDebug(mName << ": Paused.");
 }
 
 void KruzhochkiState::resume()
 {
+  mIsPaused = false;
+  mRoot->getEventManager()->addEventHandler(this);
+  kruzDebug(mName << ": Resumed.");
 }
 
 void KruzhochkiState::handleEvent(const Event& event)
@@ -45,7 +53,7 @@ void KruzhochkiState::handleEvent(const Event& event)
   {
     if (event.systemEvent.event == SE_WINDOW_CLOSE)
     {
-      cout << mName << ": 'Window close' system event received. terminating." << endl;
+      kruzDebug(mName << ": 'Window close' system event received. terminating.");
       mRoot->terminate(0);
       return;
     }
@@ -54,14 +62,13 @@ void KruzhochkiState::handleEvent(const Event& event)
   {
     if (event.mouseInput.input == MI_LEFT_PRESSED)
     {
-      cout << mName << ": Left mouse button is pressed. Shooting the circle." << endl;
+      kruzDebug(mName << ": Left mouse button is pressed. Shooting the circle.");
       //TODO: Shoot the circle!
     }
     if (event.mouseInput.input == MI_RIGHT_PRESSED)
     {
-      cout << mName << ": Right mouse button pressed. Switching to the main menu." << endl;
-      //mRoot->getStateManager()->pushState("main-menu");
-      mRoot->terminate(0);
+      kruzDebug(mName << ": Right mouse button pressed. Switching to the main menu.");
+      mRoot->getStateManager()->pushState("main-menu");
     }
   }
 }
