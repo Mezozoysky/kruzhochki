@@ -7,6 +7,9 @@
 namespace kruz
 {
 
+  /// IGameState "interface".
+  ///
+  /// Common interface for the game states, such as intro, outro, actual game, main menu or something.
   class IGameState : public IEventHandler
   {
   public:
