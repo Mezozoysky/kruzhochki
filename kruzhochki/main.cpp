@@ -3,6 +3,7 @@
 #include "CWinapiRoot.h"
 #include "CGameStateManager.h"
 #include "CWinapiEventManager.h"
+#include "COpenglGfxManager.h"
 
 using namespace kruz;
 

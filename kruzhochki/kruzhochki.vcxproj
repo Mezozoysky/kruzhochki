@@ -79,6 +79,7 @@
     <ClCompile Include="main.cpp" />
     <ClCompile Include="CWinapiRoot.cpp" />
     <ClCompile Include="CWinapiEventManager.cpp" />
+    <ClCompile Include="COpenglGfxManager.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="CGameStateManager.h" />
@@ -92,6 +93,7 @@
     <ClInclude Include="Kruzhochki.h" />
     <ClInclude Include="CWinapiRoot.h" />
     <ClInclude Include="CWinapiEventManager.h" />
+    <ClInclude Include="COpenglGfxManager.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
