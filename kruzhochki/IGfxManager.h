@@ -14,8 +14,8 @@ namespace kruz
     {
     }
 
-    virtual void drawCircle() = 0;
-    virtual void drawCounter() = 0;
+    virtual void drawCircle(GLfloat x, GLfloat y, GLfloat r) = 0;
+    virtual void drawPointsCounter(unsigned long points) = 0;
   };
 
 } // namespace kruz
