@@ -84,6 +84,7 @@ namespace kruz
     if (!mStack.empty())
     {
       mStack.top()->deactivate();
+      mStack.pop();
     }
 
     if (!mStack.empty())
