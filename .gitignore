@@ -6,3 +6,5 @@ ipch
 *.sdf
 *.opensdf
 *.user
+
+*.cout
