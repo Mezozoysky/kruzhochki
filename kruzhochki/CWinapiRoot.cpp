@@ -48,6 +48,9 @@ namespace kruz
 
   int CWinapiRoot::run()
   {
+    // Creating the main window.
+    createWindow();
+    // Switching to the starting game state.
     mStateManager->changeState(mStateManager->getStartState());
 
     MSG msg;
@@ -265,4 +268,16 @@ namespace kruz
     return DefWindowProc(window, msg, wParam, lParam);
   }
 
+  void CWinapiRoot::handleSizeEvent(GLsizei width, GLsizei height)
+  {
+    // Window-wide viewport for OpenGL.
+    glViewport(0, 0, width, height);
+
+    // Projection mode.
+    glMatrixMode(GL_PROJECTION);
+    glLoadIdentity();
+    // Orthographic projection.
+    glOrtho(0.0, width, height, 0, -1.0, 1.0);
+    glMatrixMode(GL_MODELVIEW);
+  }
 } // namespace kruz
