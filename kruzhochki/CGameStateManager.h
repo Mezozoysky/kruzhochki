@@ -28,6 +28,8 @@ namespace kruz
     void pushState(const std::string& stateName);
     void popState();
 
+    void clearStates();
+
   private:
     std::string mStartState;
     std::map<std::string, IGameState*> mStates;

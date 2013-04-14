@@ -93,4 +93,20 @@ namespace kruz
     }
   }
 
+  void CGameStateManager::clearStates()
+  {
+    if (!mStack.empty())
+    {
+      mStack.top()->deactivate();
+      while (!mStack.empty())
+      {
+        mStack.pop();
+      }
+    }
+    if (!mStates.empty())
+    {
+      mStates.clear();
+    }
+  }
+
 } // namespace kruz
