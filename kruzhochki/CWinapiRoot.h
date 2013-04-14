@@ -24,14 +24,25 @@ namespace kruz
     public IRoot
   {
   public:
+    /// Event if all the arguments are specified, they make sence only on the first call.
+    /// During subsequent calls all arguments will be ignored.
+    static CWinapiRoot* createOnce(
+      unsigned short width = 800,
+      unsigned short height = 600,
+      bool fullscreen = false
+    );
+
+    //We make a singleton, so where is a private section for constructors and assignment operator
+  private:
     CWinapiRoot(
       unsigned short width,
       unsigned short height,
-      bool fullscreen,
-      IGameStateManager* stateManager,
-      IEventManager* eventManager,
-      IGfxManager* gfxManager
-    );
+      bool fullscreen
+    ); // Private constructor
+    CWinapiRoot(const CWinapiRoot& sopySrc); // Private copy constructor
+    CWinapiRoot& operator=(const CWinapiRoot& src); // Private assignment
+
+  public:
     virtual ~CWinapiRoot();
 
     IGameStateManager* getStateManager() const;
@@ -43,6 +54,15 @@ namespace kruz
     /// By calling terminate() root application will stop after the current loop iteration.
     inline void terminate(int errorCode = 0);
 
+    /// Print the line of up to 256 chars over OpenGL window.
+    void glPrintText(const std::string& text, unsigned short x, unsigned short y);
+
+    /// Get the actual window width.
+    inline unsigned short getWindowWidth() const;
+    /// Get the actual window height.
+    inline unsigned short getWindowHeight() const;
+
+
   private:
     /// Creates the main and only window
     void createWindow();
@@ -50,8 +70,12 @@ namespace kruz
     static LRESULT CALLBACK wndProc(HWND window, UINT msg, WPARAM wParam, LPARAM lParam);
     /// Calling by wndProc() in order to recalculate window parameters according to the new size.
     void handleSizeEvent(GLsizei width, GLsizei height);
+    /// Calling by createWindow() after creating the actual window in order to initialize OpenGL and build the font for it.
+    void initOpenGL();
 
   private:
+    static CWinapiRoot* smInstance;
+
     bool mIsRunning;
     int mErrorCode;
     IGameStateManager* mStateManager;
@@ -66,6 +90,8 @@ namespace kruz
     HGLRC mGLContext;
 
     bool fullscreen;
+
+    GLuint mFontListsBase; ///< Nubfer of the first display list of sequence of lists used for drawing text.
   };
 
 } // namespace kruz

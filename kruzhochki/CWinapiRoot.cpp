@@ -1,16 +1,29 @@
 #include "CWinapiRoot.h"
 #include "CWinapiEventManager.h"
+#include "CGameStateManager.h"
+#include "COpenglGfxManager.h"
+#include <gl/GL.h>
+#include <cstdio>
 
 namespace kruz
 {
+  CWinapiRoot* CWinapiRoot::createOnce(
+    unsigned short width,
+    unsigned short height,
+    bool fullscreen
+  )
+  {
+    if (!smInstance)
+    {
+      smInstance = new CWinapiRoot(width, height, fullscreen);
+    }
+    return smInstance;
+  }
 
   CWinapiRoot::CWinapiRoot(
       unsigned short width,
       unsigned short height,
-      bool fullscreen,
-      IGameStateManager* stateManager,
-      IEventManager* eventManager,
-      IGfxManager* gfxManager
+      bool fullscreen
   ) :
     mIsRunning(true),
     mErrorCode(0),
@@ -20,15 +33,51 @@ namespace kruz
     mWindow(NULL),
     mDeviceContext(NULL),
     mGLContext(NULL),
-    mStateManager(stateManager),
-    mEventManager(eventManager),
-    mGfxManager(gfxManager)
+    mStateManager(NULL),
+    mEventManager(NULL),
+    mGfxManager(NULL),
+    mFontListsBase(-1)
+  {
+    mStateManager = new CGameStateManager();
+    mEventManager = new CWinapiEventManager();
+    mGfxManager = new COpenglGfxManager(this); //TODO: GfxManager needs a pointer to to root for using root's glPrintText. Optimize in future.
+  }
+
+  CWinapiRoot::CWinapiRoot(const CWinapiRoot& copySrc)
   {
   }
 
+  CWinapiRoot& CWinapiRoot::operator=(const CWinapiRoot& src)
+  {
+    return *this;
+  }
 
   CWinapiRoot::~CWinapiRoot()
   {
+    if (mStateManager)
+    {
+      mStateManager->clearStates();
+      delete mStateManager;
+    }
+
+    if (mEventManager)
+    {
+      mEventManager->removeAllEventHandlers();
+      delete mEventManager;
+    }
+
+    //TODO: delete states here.
+
+    if (mGfxManager)
+    {
+      delete mGfxManager;
+    }
+
+    // Deleting the font lists
+    glDeleteLists(mFontListsBase, 128);
+
+
+    //TODO: Delete the window resources, etc.
   }
 
   IGameStateManager* CWinapiRoot::getStateManager() const
@@ -75,7 +124,19 @@ namespace kruz
         if (mStateManager) //TODO: Optimize! Excrescent test.
         {
           mStateManager->update();
-          mStateManager->render();
+          
+          glClear(GL_COLOR_BUFFER_BIT);
+          glPushMatrix();
+          glLoadIdentity();
+          glEnable(GL_BLEND); // Blending is needed for semitransparent counter drawing.
+          glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+          
+            mStateManager->render();
+
+          glDisable(GL_BLEND);
+          glPopMatrix();
+          glFlush();
+          SwapBuffers(mDeviceContext);
         }
       }
     }
@@ -224,11 +285,8 @@ namespace kruz
     }
 
     // Initializing OpenGL
-    glClearColor(0.0f, 0.0f, 0.0f, 0.0f); // Color using to clear the color buffer.
-    //TODO: Is it for textures only?
-    //glEnable(GL_ALPHA_TEST); // Alpha test ON.
-    //glAlphaFunc(GL_EQUAL, 0.0f); // Skip pixels which alpha is equal to 0.
-
+    initOpenGL();
+ 
     // Raising the window up
     ShowWindow(mWindow, SW_SHOW);
 
@@ -270,6 +328,8 @@ namespace kruz
 
   void CWinapiRoot::handleSizeEvent(GLsizei width, GLsizei height)
   {
+    mWindowWidth = width;
+    mWindowHeight = height;
     // Window-wide viewport for OpenGL.
     glViewport(0, 0, width, height);
 
@@ -277,7 +337,77 @@ namespace kruz
     glMatrixMode(GL_PROJECTION);
     glLoadIdentity();
     // Orthographic projection.
-    glOrtho(0.0, width, height, 0, -1.0, 1.0);
+    glOrtho(0.0, width, height, 0, 0.0, 1.0);
     glMatrixMode(GL_MODELVIEW);
   }
+
+  void CWinapiRoot::initOpenGL()
+  {
+    glClearColor(0.0f, 0.0f, 0.0f, 0.0f); // Color using to clear the color buffer.
+
+    //TODO: Is it for textures only?
+    //glEnable(GL_ALPHA_TEST); // Alpha test ON.
+    //glAlphaFunc(GL_EQUAL, 0.0f); // Skip pixels which alpha is equal to 0.
+
+    HFONT font;
+    HFONT oldFont; // Old font to keeping.
+
+    GLuint listsBase = glGenLists(128); // Number of the first of 96 display lists, each correcsponding to one character.
+
+    font = CreateFont(  // Creating GDI font.
+      -24, // Font height. Minus means that we need the font based on the charated height instead of cell-height-based.
+      0, // Font cell width. 0 means use default value.
+      0, // Angle of escapement. We don't rotate text, so don't care.
+      0, // Orientation angle. Don't care.
+      FW_BOLD, /*FW_DONTCARE,*/ // Font weight.
+      false, // Italic.
+      false, // Underline.
+      false, // Strikeout.
+      ANSI_CHARSET, // Default charset (I guess, it's OK for ASCII).
+      OUT_TT_PRECIS, // Optput precision. This one means use TrueType if possible.
+      CLIP_DEFAULT_PRECIS, // Use default clipping precision.
+      ANTIALIASED_QUALITY, // Output quality. Use antialiasing.
+      FF_DONTCARE | DEFAULT_PITCH, // Font Family - we don't care; Pitch - don't care.
+      "Calibri" // Font name
+    );
+
+    oldFont = (HFONT)SelectObject(mDeviceContext, font); // Select the new font (and keep the old one).
+    wglUseFontBitmaps(mDeviceContext, 0, 128, listsBase); // Build 96 characters starting at 32th.
+    // font is no more needed.
+    SelectObject(mDeviceContext, oldFont); // Give back the old font.
+    DeleteObject(font); // And deleted the one we've used.
+  }
+
+  void CWinapiRoot::glPrintText(const std::string& text, unsigned short x, unsigned short y)
+  {
+    char line[256]; // We'll print lines of up to 256 chars.
+    sprintf_s(line, text.c_str()); // Obtaining the line.
+    line[255] = '\0'; // be on the safe side
+
+    //TODO: Translate the window coords into GL-coords.
+
+    //glColor3f(1.0f, 1.0f,1.0f); // White color for whole the printing text.
+
+    glPushMatrix();
+      glLoadIdentity();
+      glRasterPos2f((GLfloat)x, (GLfloat)y);
+      glPushAttrib(GL_LIST_BIT); // Push the list bit. Preventing glListBase from affecting "wrong" display lists.
+      glListBase(mFontListsBase + 2); // I don't understand why, but char codes seems to be moved forward by 2, i'm doing the same.
+      glCallLists(strlen(line), GL_UNSIGNED_BYTE, line); // Draw the display lists.
+      glPopAttrib();
+    glPopMatrix();
+  }
+
+  unsigned short CWinapiRoot::getWindowWidth() const
+  {
+    return mWindowWidth;
+  }
+
+  unsigned short CWinapiRoot::getWindowHeight() const
+  {
+    return mWindowHeight;
+  }
+
+  CWinapiRoot* CWinapiRoot::smInstance = NULL;
+
 } // namespace kruz
