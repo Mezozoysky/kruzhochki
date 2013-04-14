@@ -168,4 +168,4 @@ void KruzhochkiState::shoot(unsigned short x, unsigned short y)
   }
 }
 
-const DWORD KruzhochkiState::smKCreateDelayTime = 800; // msec.
+const DWORD KruzhochkiState::smKCreateDelayTime = 500; // msec.
