@@ -60,6 +60,12 @@ void IntroState::handleEvent(const Event& event)
       kruzDebug(mName << ": Left mouse button is pressed. Starting the game.");
       mRoot->getStateManager()->changeState("kruzhochki");
     }
+    if (event.mouseInput.input == MI_RIGHT_PRESSED)
+    {
+      kruzDebug(mName << ": Right button pressed. Exit.");
+      mRoot->terminate(0);
+      return;
+    }
   }
 }
 
@@ -70,5 +76,19 @@ void IntroState::update()
 
 void IntroState::render()
 {
-  //TODO: Draw all we need with Gfx Manager
+  IGfxManager* gfx = mRoot->getGfxManager();
+
+  gfx->setColor(0.5f, 1.0f, 0.25f);
+  gfx->drawText("KUZHOCHKI, the game.", 100, 24 * 5);
+  gfx->setColor(0.8f, 0.8f, 0.8f);
+  gfx->drawText("Test job for Social Quantum.", 100, 24 * 6);
+  
+  gfx->setColor(1.0f, 1.0f, 1.0f);
+  gfx->drawText("START: Left Mouse Button", 100, 24 * 10);
+  gfx->drawText("EXIT: Right Mouse Button", 100, 24 * 11);
+
+  gfx->setColor(0.8f, 0.8f, 0.8f);
+  gfx->drawText("Game controls:", 100, 24 * 15);
+  gfx->drawText("SHOOT: Left Mouse Button", 140, 24 * 16);
+  gfx->drawText("PAUSE/MAIN MENU: Right Mouse Button", 140, 24 * 17);
 }
