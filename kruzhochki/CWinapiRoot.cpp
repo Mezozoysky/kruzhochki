@@ -8,22 +8,24 @@
 namespace kruz
 {
   CWinapiRoot* CWinapiRoot::createOnce(
+    HINSTANCE appInstance,
+    bool fullscreen,
     unsigned short width,
-    unsigned short height,
-    bool fullscreen
+    unsigned short height
   )
   {
     if (!smInstance)
     {
-      smInstance = new CWinapiRoot(width, height, fullscreen);
+      smInstance = new CWinapiRoot(appInstance, fullscreen, width, height);
     }
     return smInstance;
   }
 
   CWinapiRoot::CWinapiRoot(
-      unsigned short width,
-      unsigned short height,
-      bool fullscreen
+    HINSTANCE appInstance,
+    bool fullscreen,
+    unsigned short width,
+    unsigned short height
   ) :
     mIsRunning(true),
     mErrorCode(0),
@@ -38,6 +40,7 @@ namespace kruz
     mGfxManager(NULL),
     mFontListsBase(-1)
   {
+    smAppInstance = appInstance;
     mStateManager = new CGameStateManager();
     mEventManager = new CWinapiEventManager();
     mGfxManager = new COpenglGfxManager(this); //TODO: GfxManager needs a pointer to to root for using root's glPrintText. Optimize in future.
@@ -94,6 +97,45 @@ namespace kruz
 
 
     //TODO: Delete the window resources, etc.
+    if (fullscreen)
+    {
+      ChangeDisplaySettings(NULL, 0); // ack to the desktop mode.
+    }
+    if (mGLContext)
+    {
+      if (!wglMakeCurrent(NULL, NULL)) // Releasing GL context.
+      {
+        std::cout << "Could not release GLRC context." << std::endl;
+      }
+
+      if (!wglDeleteContext(mGLContext)) // Deleting GL context.
+      {
+        std::cout << "Could not delete GLRC context." << std::endl;
+      }
+      mGLContext = NULL;
+    }
+    if (mDeviceContext)
+    {
+      if (!ReleaseDC(mWindow, mDeviceContext)) // Releasing device context.
+      {
+        std::cout << "Could not release device context." << std::endl;
+      }
+      mDeviceContext = NULL;
+    }
+    if (mWindow)
+    {
+      if (!DestroyWindow(mWindow)) // Destroing the main window.
+      {
+        std::cout << "Could not release window." << std::endl;
+      }
+      mWindow = NULL;
+    }
+
+    if (!UnregisterClass(smClassName, smAppInstance)) // Unregister the window class.
+    {
+      std::cout << "Could not unregister window class." << std::endl;
+    }
+    smAppInstance = NULL;
 
     kruzDebug("Root is destructed.");
   }
@@ -181,7 +223,7 @@ namespace kruz
     wc.hCursor = 0;
     wc.hbrBackground = 0;
     wc.lpszMenuName = NULL; // Don't care about menu
-    wc.lpszClassName = "Kruzhochki-Window-Class";
+    wc.lpszClassName = smClassName;
 
     RegisterClass(&wc);
 
@@ -427,5 +469,7 @@ namespace kruz
   }
 
   CWinapiRoot* CWinapiRoot::smInstance = NULL;
+  HINSTANCE CWinapiRoot::smAppInstance = NULL;
+  const char* CWinapiRoot::smClassName = "Kruzhochki-Window-Class";
 
 } // namespace kruz

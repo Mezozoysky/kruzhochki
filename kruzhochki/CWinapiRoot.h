@@ -27,17 +27,19 @@ namespace kruz
     /// Event if all the arguments are specified, they make sence only on the first call.
     /// During subsequent calls all arguments will be ignored.
     static CWinapiRoot* createOnce(
+      HINSTANCE appInstance,
+      bool fullscreen = false,
       unsigned short width = 800,
-      unsigned short height = 600,
-      bool fullscreen = false
+      unsigned short height = 600
     );
 
     //We make a singleton, so where is a private section for constructors and assignment operator
   private:
     CWinapiRoot(
+      HINSTANCE appInstance,
+      bool fullscreen,
       unsigned short width,
-      unsigned short height,
-      bool fullscreen
+      unsigned short height
     ); // Private constructor
     CWinapiRoot(const CWinapiRoot& sopySrc); // Private copy constructor
     CWinapiRoot& operator=(const CWinapiRoot& src); // Private assignment
@@ -75,6 +77,8 @@ namespace kruz
 
   private:
     static CWinapiRoot* smInstance;
+    static HINSTANCE smAppInstance;
+    static const char* smClassName;
 
     bool mIsRunning;
     int mErrorCode;

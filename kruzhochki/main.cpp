@@ -25,9 +25,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 #endif // KRUZ_DEBUG
 
   IRoot* root = CWinapiRoot::createOnce(
-    800, //Window width
-    600, //Window height
-    false //Fullscreen option
+    hInstance
   );
 
   IGameState* introState = new IntroState(root, "intro");
