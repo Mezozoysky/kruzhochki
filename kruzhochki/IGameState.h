@@ -7,6 +7,8 @@
 namespace kruz
 {
 
+  //TODO: Make the states attacheble to the root and delete it when the root deleting.
+
   /// IGameState "interface".
   ///
   /// Common interface for the game states, such as intro, outro, actual game, main menu or something.
