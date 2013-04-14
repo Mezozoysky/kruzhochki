@@ -24,17 +24,10 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
   cout.rdbuf(coutFile.rdbuf());
 #endif // KRUZ_DEBUG
 
-  IGameStateManager* stateManager = new CGameStateManager();
-  IEventManager* eventManager = new CWinapiEventManager();
-  IGfxManager* gfxManager = new COpenglGfxManager();
-
-  IRoot* root = new CWinapiRoot(
+  IRoot* root = CWinapiRoot::createOnce(
     800, //Window width
     600, //Window height
-    false, //Fullscreen option
-    stateManager,
-    eventManager,
-    gfxManager
+    false //Fullscreen option
   );
 
   IGameState* introState = new IntroState(root, "intro");
@@ -54,10 +47,6 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
   delete introState;
 
   delete root;
-
-  delete gfxManager;
-  delete eventManager;
-  delete stateManager;
 
 #ifdef KRUZ_DEBUG
   cout.rdbuf(oldCoutBuf);
