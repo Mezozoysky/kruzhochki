@@ -21,9 +21,6 @@ public:
   /// Draw the kruzhochek on the window.
   void draw(IGfxManager* gfx) const;
 
-  /// Get the spped of kruzhochek.
-  /// We will assume that the speed is measured in pixels/sec.
-  float getSpeed() const;
   /// Get the point, that a player gets for the killing kruzhochek.
   unsigned long getPoints() const;
 

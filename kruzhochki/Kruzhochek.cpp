@@ -51,11 +51,6 @@ float Kruzhochek::getR() const
   return mR;
 }
 
-float Kruzhochek::getSpeed() const
-{
-  return mValue;
-}
-
 unsigned long Kruzhochek::getPoints() const
 {
   // Poits are integer. The biggest (and cheapest) circle will cost 10 point
@@ -92,5 +87,5 @@ bool Kruzhochek::contains(unsigned short x, unsigned short y) const
 
 void Kruzhochek::fall(DWORD deltaT)
 {
-  mY += deltaT / 10 * mValue; // sec * pixels/sec = pixels to fall.
+  mY += (deltaT / 10) * (mValue + 0.2f); // time * speed = pixels to fall.
 }
