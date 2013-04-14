@@ -95,6 +95,8 @@ namespace kruz
     kruzDebug("Root destructor: deleting font lists.");
     glDeleteLists(mFontListsBase, 128);
 
+    // Restoring the mouse cursor.
+    ShowCursor(true);
 
     //TODO: Delete the window resources, etc.
     if (fullscreen)
@@ -192,7 +194,8 @@ namespace kruz
           
           // Render the scene.
           mStateManager->render();
-
+          // Drawing the custom cursor.
+          glDrawCursor();
         glDisable(GL_BLEND);
         glPopMatrix();
         glFlush();
@@ -349,6 +352,7 @@ namespace kruz
  
     // Raising the window up
     ShowWindow(mWindow, SW_SHOW);
+    ShowCursor(false);
 
     //Force calling it here in order to prevent the loss of calling after than OpenGL is initialized.
     handleSizeEvent(mWindowWidth, mWindowHeight);
@@ -377,6 +381,7 @@ namespace kruz
         //Perform the window resizing
         rootInstance->handleSizeEvent(LOWORD(lParam), HIWORD(lParam));
       }
+
       if (rootInstance->mEventManager)
       {
         (static_cast<CWinapiEventManager*>(rootInstance->mEventManager))->processWinapiEvent(msg, wParam, lParam);
@@ -436,6 +441,21 @@ namespace kruz
     // font is no more needed.
     SelectObject(mDeviceContext, oldFont); // Give back the old font.
     DeleteObject(font); // And deleted the one we've used.
+  }
+
+  void CWinapiRoot::glDrawCursor()
+  {
+    POINT pos;
+    GetCursorPos(&pos);
+    ScreenToClient(mWindow, &pos);
+    if (pos.x >= 0 && pos.x < mWindowWidth && pos.y >= 0 && pos.y < mWindowHeight)
+    {
+      float x = (float)pos.x;
+      float y = (float)pos.y;
+
+      mGfxManager->setColor(1.0f, 1.0f, 1.0, 0.7f);
+      mGfxManager->drawCircle(x, y, 5.0f);
+    }
   }
 
   void CWinapiRoot::glPrintText(const std::string& text, unsigned short x, unsigned short y)

@@ -74,6 +74,8 @@ namespace kruz
     void handleSizeEvent(GLsizei width, GLsizei height);
     /// Calling by createWindow() after creating the actual window in order to initialize OpenGL and build the font for it.
     void initOpenGL();
+    /// Draw the custom mouse cursor.
+    void glDrawCursor();
 
   private:
     static CWinapiRoot* smInstance;
