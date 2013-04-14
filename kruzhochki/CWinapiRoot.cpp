@@ -54,30 +54,48 @@ namespace kruz
 
   CWinapiRoot::~CWinapiRoot()
   {
+    kruzDebug("Root destructor called.");
+
+    if (mEventManager)
+    {
+      kruzDebug("Root destructor: clearing event handlers from manager.");
+      mEventManager->removeAllEventHandlers();
+    }
+
     if (mStateManager)
     {
+      kruzDebug("Root destructor: clearing the states from the manager.");
       mStateManager->clearStates();
+    }
+
+    //TODO: delete states here.
+
+    if (mStateManager)
+    {
+      kruzDebug("Root destructor: deleting state manager.");
       delete mStateManager;
     }
 
     if (mEventManager)
     {
-      mEventManager->removeAllEventHandlers();
+      kruzDebug("Root destructor: deleting event manager.");
       delete mEventManager;
     }
 
-    //TODO: delete states here.
-
     if (mGfxManager)
     {
+      kruzDebug("Root destructor: deleting GGX manager.");
       delete mGfxManager;
     }
 
     // Deleting the font lists
+    kruzDebug("Root destructor: deleting font lists.");
     glDeleteLists(mFontListsBase, 128);
 
 
     //TODO: Delete the window resources, etc.
+
+    kruzDebug("Root is destructed.");
   }
 
   IGameStateManager* CWinapiRoot::getStateManager() const
@@ -113,36 +131,34 @@ namespace kruz
       {
         TranslateMessage(&msg);
         DispatchMessage(&msg);
-
         if (msg.message == WM_QUIT)
         {
           mIsRunning = false;
         }
       }
-      else
-      {
-        if (mStateManager) //TODO: Optimize! Excrescent test.
-        {
-          // Update the scene.
-          mStateManager->update();
-          
-          glClear(GL_COLOR_BUFFER_BIT);
-          glPushMatrix();
-          glLoadIdentity();
-          glEnable(GL_BLEND); // Blending is needed for semitransparent counter drawing.
-          glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-          
-            // Render the scene.
-            mStateManager->render();
 
-          glDisable(GL_BLEND);
-          glPopMatrix();
-          glFlush();
-          SwapBuffers(mDeviceContext);
-        }
+      if (mStateManager) //TODO: Optimize! Excrescent test.
+      {
+        // Update the scene.
+        mStateManager->update();
+          
+        glClear(GL_COLOR_BUFFER_BIT);
+        glPushMatrix();
+        glLoadIdentity();
+        glEnable(GL_BLEND); // Blending is needed for semitransparent counter drawing.
+        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+          
+          // Render the scene.
+          mStateManager->render();
+
+        glDisable(GL_BLEND);
+        glPopMatrix();
+        glFlush();
+        SwapBuffers(mDeviceContext);
       }
     }
 
+    kruzDebug("Main Loop is terminated.");
     return mErrorCode;
   }
 

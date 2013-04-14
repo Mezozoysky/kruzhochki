@@ -95,13 +95,15 @@ namespace kruz
 
   void CGameStateManager::clearStates()
   {
+    /* Not needed, any handlers already unregistered.
     if (!mStack.empty())
     {
       mStack.top()->deactivate();
-      while (!mStack.empty())
-      {
-        mStack.pop();
-      }
+    }
+    */
+    while (!mStack.empty())
+    {
+      mStack.pop();
     }
     if (!mStates.empty())
     {
