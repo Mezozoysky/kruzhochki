@@ -56,11 +56,38 @@ float Kruzhochek::getSpeed() const
   return mValue;
 }
 
-int Kruzhochek::getPoints() const
+unsigned long Kruzhochek::getPoints() const
 {
   // Poits are integer. The biggest (and cheapest) circle will cost 10 point
   // The smaller the raius, the grater value and points.
-  return (int)(floor(mValue * 10 + 0.5));
+  return (unsigned long)(floor(mValue * 10 + 0.5));
+}
+
+bool Kruzhochek::contains(unsigned short x, unsigned short y) const
+{
+  // Geometry.
+  float dX; // Horizontal distance between point and circle center.
+  float dY; // Vertical distance between point and circle center.
+
+  if (x > mX)
+  {
+    dX = x - mX;
+  }
+  else
+  {
+    dX = mX - x;
+  }
+  if (y > mY)
+  {
+    dY = y - mY;
+  }
+  else
+  {
+    dY = mY - y;
+  }
+
+  // Return true if absolute distance less then raduis.
+  return sqrtf(dX * dX + dY * dY) < mR;
 }
 
 void Kruzhochek::fall(DWORD deltaT)

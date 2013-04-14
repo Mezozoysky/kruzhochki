@@ -82,8 +82,8 @@ namespace kruz
         event.type = ET_MOUSE_INPUT;
         MouseInput mi;
         mi.input = MI_LEFT_PRESSED;
-        mi.x = 0;
-        mi.y = 0;
+        mi.x = LOWORD(lParam);
+        mi.y = HIWORD(lParam);
         event.mouseInput = mi;
         raiseEvent(event);
       }
@@ -93,8 +93,8 @@ namespace kruz
         event.type = ET_MOUSE_INPUT;
         MouseInput mi;
         mi.input = MI_RIGHT_PRESSED;
-        mi.x = 0;
-        mi.y = 0;
+        mi.x = LOWORD(lParam);
+        mi.y = HIWORD(lParam);
         event.mouseInput = mi;
         raiseEvent(event);
       }

@@ -11,7 +11,8 @@ KruzhochkiState::KruzhochkiState(IRoot* root, const string& name) :
   mRoot(root),
   mName(name),
   mIsPaused(false),
-  mLastKCreatedTime(0)
+  mLastKCreatedTime(0),
+  mPoints(0)
 {
 }
 
@@ -68,7 +69,7 @@ void KruzhochkiState::handleEvent(const Event& event)
     if (event.mouseInput.input == MI_LEFT_PRESSED)
     {
       kruzDebug(mName << ": Left mouse button is pressed. Shooting the circle.");
-      //TODO: Shoot the circle!
+      shoot(event.mouseInput.x, event.mouseInput.y);
     }
     if (event.mouseInput.input == MI_RIGHT_PRESSED)
     {
@@ -124,8 +125,7 @@ void KruzhochkiState::update()
     mLastKCreatedTime = GetTickCount();
   }
 
-  mLastUpdatedTime = currentTime;
-  mWholeUpdateTime = GetTickCount() - currentTime; // Debug value;
+  mLastUpdatedTime = currentTime; // Save the time of most recent update.
 }
 
 void KruzhochkiState::render()
@@ -139,13 +139,33 @@ void KruzhochkiState::render()
   }
 
   // Drawing the player points counter.
-  gfx->setColor(1.0f, 1.0f, 1.0f, 0.5f);
-  gfx->drawText("COUNTER", 10, 600 - 24 - 10);
-
-  // Debug: Showing the time we spending to update the scene.
   ostringstream ossTemp;
-  ossTemp << mWholeUpdateTime;
-  gfx->drawText(ossTemp.str(), 350, 600 - 24 - 10);
+  ossTemp << mPoints;
+  gfx->setColor(1.0f, 1.0f, 1.0f, 0.5f);
+  gfx->drawText(ossTemp.str(), 10, 600 - 24 - 10);
+
+}
+
+void KruzhochkiState::shoot(unsigned short x, unsigned short y)
+{
+  auto it = mScene.begin();
+  while (it != mScene.end())
+  {
+    Kruzhochek* k = (*it);
+    if (k->contains(x, y))
+    {
+      kruzDebug("Hit! " << k->getPoints() << "points achieved!");
+      mPoints += k->getPoints();
+      it = mScene.erase(it);
+      delete k;
+      break;
+    }
+    else
+    {
+      kruzDebug("Miss!");
+      ++it;
+    }
+  }
 }
 
 const DWORD KruzhochkiState::smKCreateDelayTime = 800; // msec.

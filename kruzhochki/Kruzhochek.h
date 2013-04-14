@@ -23,9 +23,12 @@ public:
 
   /// Get the spped of kruzhochek.
   /// We will assume that the speed is measured in pixels/sec.
-  inline float getSpeed() const;
+  float getSpeed() const;
   /// Get the point, that a player gets for the killing kruzhochek.
-  inline int getPoints() const;
+  unsigned long getPoints() const;
+
+  /// Test for the kruzhochek's circle contain the given point.
+  bool contains(unsigned short x, unsigned short y) const;
 
   /// Chnage position according to the elapsed time.
   /// @param deltaT The elapsed time, msec.

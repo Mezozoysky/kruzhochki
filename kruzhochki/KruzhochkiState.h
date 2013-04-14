@@ -29,6 +29,9 @@ public:
   void render();
 
 private:
+  void shoot(unsigned short x, unsigned short y);
+
+private:
   static const DWORD smKCreateDelayTime; ///< Time delay between the new kuzhocheks creations.
 
 private:
@@ -36,10 +39,10 @@ private:
   IRoot* mRoot;
   bool mIsPaused;
   std::list<Kruzhochek*> mScene; ///< Scene, the list of live kruzhocheks.
+  unsigned long mPoints;
   
   DWORD mLastKCreatedTime; ///< The time of lats kruzhochek creation (msec).
   DWORD mLastUpdatedTime; ///< The time of last scene update.
-  DWORD mWholeUpdateTime; // Debug var.
 };
 
 #endif // KRUZHOCHKI_KRUZHOCHKISTATE_H

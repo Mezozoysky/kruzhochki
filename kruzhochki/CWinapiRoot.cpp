@@ -123,6 +123,7 @@ namespace kruz
       {
         if (mStateManager) //TODO: Optimize! Excrescent test.
         {
+          // Update the scene.
           mStateManager->update();
           
           glClear(GL_COLOR_BUFFER_BIT);
@@ -131,6 +132,7 @@ namespace kruz
           glEnable(GL_BLEND); // Blending is needed for semitransparent counter drawing.
           glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
           
+            // Render the scene.
             mStateManager->render();
 
           glDisable(GL_BLEND);
