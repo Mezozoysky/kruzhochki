@@ -73,5 +73,12 @@ void MainMenuState::update()
 
 void MainMenuState::render()
 {
-  //TODO: Draw all we need with Gfx Manager
+  IGfxManager* gfx = mRoot->getGfxManager();
+
+  gfx->setColor(1.0f, 1.0f, 1.0f);
+
+  gfx->drawText("Main Menu.", 100, 24 * 5);
+
+  gfx->drawText("RESUME GAME: Left Mouse Button", 140, 24 * 10);
+  gfx->drawText("EXIT TO OS: Right Mouse Button", 140, 24 * 11);
 }
