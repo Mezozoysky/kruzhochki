@@ -34,6 +34,7 @@ namespace kruz
     ET_SYSTEM_EVENT
   };
 
+  /// Trans-platfom extensible Event structure.
   struct Event
   {
     int type;

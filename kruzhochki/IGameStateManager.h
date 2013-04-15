@@ -6,7 +6,8 @@
 
 namespace kruz
 {
-
+  /// Game state manager interface
+  /// Manages registered game state using the stack manner.
   class IGameStateManager
   {
   public:
@@ -16,7 +17,7 @@ namespace kruz
 
     /// Return the name of the starting state.
     virtual std::string getStartState() const = 0;
-    /// Set the starting state name.
+    /// Set the starting state name. State with this name will be activated first.
     virtual void setStartState(const std::string& stateName) = 0;
 
     /// Updade the current state before render it.
@@ -27,14 +28,14 @@ namespace kruz
     /// Register the new state with the manager.
     virtual void registerState(IGameState* state) = 0;
 
-    /// Replace the current state with the another registered one specified by name.
+    /// Replace the top state with the another registered one specified by name.
     virtual void changeState(const std::string& stateName) = 0;
-    /// Pause the current state, make another registered one the current and activate it.
+    /// Pause the top state, make another registered one the top and activate it.
     virtual void pushState(const std::string& stateName) = 0;
-    /// Deactivate the current state, make previous the current and resume it.
+    /// Deactivate the top state, pop it, resume top state.
     virtual void popState() = 0;
 
-    //Deactivate and remove all the states.
+    //Deactivate and unregister all the states.
     virtual void clearStates() = 0;
   };
 
