@@ -9,6 +9,7 @@
 using namespace kruz;
 using namespace std;
 
+/// The 'actual game' game state class.
 class KruzhochkiState :
   public IGameState
 {
@@ -37,9 +38,9 @@ private:
 private:
   string mName;
   IRoot* mRoot;
-  bool mIsPaused;
+  bool mIsPaused; ///< Pause flag. Circled are froze in place while it's true.
   std::list<Kruzhochek*> mScene; ///< Scene, the list of live kruzhocheks.
-  unsigned long mPoints;
+  unsigned long mPoints; ///< Player points counter.
   
   DWORD mLastKCreatedTime; ///< The time of lats kruzhochek creation (msec).
   DWORD mLastUpdatedTime; ///< The time of last scene update.

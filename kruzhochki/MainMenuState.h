@@ -7,6 +7,7 @@
 using namespace kruz;
 using namespace std;
 
+/// Main Menu game state
 class MainMenuState :
   public IGameState
 {

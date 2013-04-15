@@ -20,12 +20,14 @@ string MainMenuState::getName() const
 
 void MainMenuState::activate()
 {
+  // Subscribe for events.
   mRoot->getEventManager()->addEventHandler(this);
   kruzDebug(mName << ": Activated.");
 }
 
 void MainMenuState::deactivate()
 {
+  // Unsubscribe from events.
   mRoot->getEventManager()->removeEventHandler(this);
   kruzDebug(mName << ": Deactivated.");
 }
@@ -42,25 +44,28 @@ void MainMenuState::resume()
 
 void MainMenuState::handleEvent(const Event& event)
 {
-  if (event.type == ET_SYSTEM_EVENT)
+  if (event.type == ET_SYSTEM_EVENT) // System event
   {
-    if (event.systemEvent.event == SE_WINDOW_CLOSE)
+    if (event.systemEvent.event == SE_WINDOW_CLOSE) // Window is closing.
     {
       kruzDebug( mName << ": 'Window close' system event received. terminating.");
+      // Terminate the main loop.
       mRoot->terminate(0);
       return;
     }
   }
   else if (event.type == ET_MOUSE_INPUT)
   {
-    if (event.mouseInput.input == MI_LEFT_PRESSED)
+    if (event.mouseInput.input == MI_LEFT_PRESSED) // Left button.
     {
       kruzDebug(mName << ": Left mouse button is pressed. Resume the game.");
+      // Return to game.
       mRoot->getStateManager()->popState();
     }
-    if (event.mouseInput.input == MI_RIGHT_PRESSED)
+    if (event.mouseInput.input == MI_RIGHT_PRESSED) // Right button.
     {
       kruzDebug(mName << ": Right button is pressed. Exit the game.");
+      // Terminate the main loop.
       mRoot->terminate(0);
     }
   }

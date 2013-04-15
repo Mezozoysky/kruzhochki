@@ -7,6 +7,7 @@
 using namespace std;
 using namespace kruz;
 
+/// Game state with starting menu. Player will see it first then starting the game.
 class IntroState :
   public IGameState
 {
@@ -27,8 +28,8 @@ public:
   void render();
 
 private:
-  string mName;
-  IRoot* mRoot;
+  string mName; ///< State's name.
+  IRoot* mRoot; ///< Pointer to the root object.
 };
 
 #endif // KRUZHOCHKI_INTROSTATE_H

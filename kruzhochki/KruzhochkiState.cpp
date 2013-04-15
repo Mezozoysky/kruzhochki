@@ -34,46 +34,55 @@ void KruzhochkiState::activate()
 
 void KruzhochkiState::deactivate()
 {
+  // Unsubscribe from events.
   mRoot->getEventManager()->removeEventHandler(this);
   kruzDebug(mName << ": Deactivated.");
 }
 
 void KruzhochkiState::pause()
 {
+  // Set pause flag.
   mIsPaused = true;
+  // Unsubscribe from events.
   mRoot->getEventManager()->removeEventHandler(this);
   kruzDebug(mName << ": Paused.");
 }
 
 void KruzhochkiState::resume()
 {
-  mIsPaused = false;
-  mRoot->getEventManager()->addEventHandler(this); // Setting ourself as an event handler.
-  mLastKCreatedTime = mLastUpdatedTime = GetTickCount(); // Adjusting the timers after pause or after start.
+  // Unset the pause flag.
+  mIsPaused = false; 
+  // Setting ourself as an event handler.
+  mRoot->getEventManager()->addEventHandler(this);
+  // Adjusting the timers after pause or after start.
+  mLastKCreatedTime = mLastUpdatedTime = GetTickCount();
   kruzDebug(mName << ": Resumed.");
 }
 
 void KruzhochkiState::handleEvent(const Event& event)
 {
-  if (event.type == ET_SYSTEM_EVENT)
+  if (event.type == ET_SYSTEM_EVENT) // System event.
   {
-    if (event.systemEvent.event == SE_WINDOW_CLOSE)
+    if (event.systemEvent.event == SE_WINDOW_CLOSE) // Window is closing.
     {
       kruzDebug(mName << ": 'Window close' system event received. terminating.");
+      // Terminate the main loop.
       mRoot->terminate(0);
       return;
     }
   }
-  else if (event.type == ET_MOUSE_INPUT)
+  else if (event.type == ET_MOUSE_INPUT) // Mouse input event.
   {
-    if (event.mouseInput.input == MI_LEFT_PRESSED)
+    if (event.mouseInput.input == MI_LEFT_PRESSED) // Left button
     {
       kruzDebug(mName << ": Left mouse button is pressed. Shooting the circle.");
+      // Shoot!
       shoot(event.mouseInput.x, event.mouseInput.y);
     }
-    if (event.mouseInput.input == MI_RIGHT_PRESSED)
+    if (event.mouseInput.input == MI_RIGHT_PRESSED) // Right button.
     {
       kruzDebug(mName << ": Right mouse button pressed. Switching to the main menu.");
+      // Pause the game and go to the main menu.
       mRoot->getStateManager()->pushState("main-menu");
     }
   }
@@ -83,6 +92,7 @@ void KruzhochkiState::update()
 {
   DWORD currentTime = GetTickCount();
 
+  // Iterate throuch scene list in order to find and delete fallen circles or move those that are still alive.
   auto it = mScene.begin();
   while (it != mScene.end())
   {
@@ -100,17 +110,18 @@ void KruzhochkiState::update()
     }
   }
 
+  // Create the new kruzhochek if where is a less than 30 kruzhocheks on the scene
+  // and creation timeout is out.
   if ((mScene.size() < 30) && (GetTickCount() > mLastKCreatedTime + smKCreateDelayTime))
   {
-    float x = rand() % (int)(mRoot->getWindowWidth() - 2 * Kruzhochek::MAX_RADIUS) + Kruzhochek::MAX_RADIUS;
-    float y;
     float r = rand() % (int)(Kruzhochek::MAX_RADIUS - 2 * Kruzhochek::MIN_RADIUS) + Kruzhochek::MIN_RADIUS;
-    float red = (rand() % 5 + 6) / 10.0f;
-    float green = (rand() % 5 + 6) / 10.0f;
-    float blue = (rand() % 5 + 6) / 10.0f;
-    //TODO: Use randomizer to create values.
-    //TODO: Normilize values.
-    y = -r; // Just on the top border of the window.
+    float x = rand() % (int)(mRoot->getWindowWidth() - 2 * Kruzhochek::MAX_RADIUS) + Kruzhochek::MAX_RADIUS;
+    float y = -r; // Just on the top border of the window.    
+    float red = (rand() % 5 + 6) / 10.0f; // 0.6f - 1.0f
+    float green = (rand() % 5 + 6) / 10.0f; // 0.6f - 1.0f
+    float blue = (rand() % 5 + 6) / 10.0f; // 0.6f - 1.0f
+
+    /* Excrescen test
     if (x - r < 0)
     {
       x = r; // Fit it in the window.
@@ -119,13 +130,16 @@ void KruzhochkiState::update()
     {
       x = mRoot->getWindowWidth() - r - 1; // Fit position in the window.
     }
+    */
 
+    // Create and put the new Kruzhochek onto the scene.
     Kruzhochek* k = new Kruzhochek(x, y, r, red, green, blue);
     mScene.push_back(k);
+    // Update the time of last Kruzhochek creation.
     mLastKCreatedTime = GetTickCount();
   }
 
-  mLastUpdatedTime = currentTime; // Save the time of most recent update.
+  mLastUpdatedTime = currentTime; // Update the time of last update.
 }
 
 void KruzhochkiState::render()
@@ -148,14 +162,18 @@ void KruzhochkiState::render()
 
 void KruzhochkiState::shoot(unsigned short x, unsigned short y)
 {
+  // Find the circle which contains the point we've bang on.
   auto it = mScene.begin();
   while (it != mScene.end())
   {
     Kruzhochek* k = (*it);
     if (k->contains(x, y))
     {
+      // We shot it!
       kruzDebug("Hit! " << k->getPoints() << "points achieved!");
+      // Collecting the points.
       mPoints += k->getPoints();
+      // Release and destroy the corpse.
       it = mScene.erase(it);
       delete k;
       break;
