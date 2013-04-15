@@ -7,7 +7,7 @@
 
 namespace kruz
 {
-
+  /// Winapi implementation of event manager interface.
   class CWinapiEventManager :
     public IEventManager
   {
@@ -15,23 +15,23 @@ namespace kruz
     CWinapiEventManager();
     virtual ~CWinapiEventManager();
 
-    // Add the new handler to the list.
+    /// Add the new handler to the list.
     void addEventHandler(IEventHandler* handler);
-    // Remove the specified handler from the list.
+    /// Remove the specified handler from the list.
     void removeEventHandler(IEventHandler* handler);
-    // Clear the handlers' list.
+    /// Clear the handlers' list.
     void removeAllEventHandlers();
 
   private:
-    // Passes event to all the eventHandlers.
+    /// Passes event to all the eventHandlers.
     void raiseEvent(const Event& event);
 
     friend class CWinapiRoot; //For calling processWinapiEvent() from CWinapiRoot.run() (main loop)
-    // Converts WinAPI event into Kruzhochki event and passes it to each linked eventHandler.
+    /// Called from main loop. Converts WinAPI event into Kruzhochki event and passes it to each linked eventHandler.
     void processWinapiEvent(UINT msg, WPARAM wParam, LPARAM lParam);
 
   private:
-    std::list<IEventHandler*>* mEventHandlers;
+    std::list<IEventHandler*>* mEventHandlers; ///< Actual list of registered handlers.
   };
 
 } // namespace kruz

@@ -56,14 +56,21 @@ namespace kruz
   
   void CWinapiEventManager::raiseEvent(const Event& event)
   {
-    std::list<IEventHandler*> tmp((*mEventHandlers));
     kruzDebug("Raising the event!");
+
+    // Temporary copy of handlers list stored here to prevent the iterator corruption
+    // in case of actual list will be changed by handleEvent handler's method.
+    std::list<IEventHandler*> tmp((*mEventHandlers));
+    
+    // Iterating through temporary copy of actual list.
     for (auto it = tmp.begin(); it != tmp.end(); ++it)
     {
+      // Passing the event to handler.
       (*it)->handleEvent(event);
     }
   }
 
+  // 
   void CWinapiEventManager::processWinapiEvent(UINT msg, WPARAM wParam, LPARAM lParam)
   {
     Event event;

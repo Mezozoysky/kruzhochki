@@ -3,6 +3,7 @@
 
 #include "Kruzhochki.h"
 #include <Windows.h>
+#include <GL/GL.h>
 
 namespace kruz
 {
@@ -20,21 +21,23 @@ namespace kruz
   };
 
   /// WinAPI implementation of the IRoot `interface`.
-  class CWinapiRoot : //TODO: Make it a singleton
+  /// Implemented as Singleton.
+  class CWinapiRoot :
     public IRoot
   {
   public:
-    /// Event if all the arguments are specified, they make sence only on the first call.
+    /// Even if all the arguments are specified, they make sence only on the first call.
     /// During subsequent calls all arguments will be ignored.
     static CWinapiRoot* createOnce(
-      HINSTANCE appInstance,
-      bool fullscreen = false,
-      unsigned short width = 800,
-      unsigned short height = 600
+      HINSTANCE appInstance, // Windows application instance.
+      bool fullscreen = false, // Fullscreen option.
+      unsigned short width = 800, // Window width.
+      unsigned short height = 600 // Window height.
     );
 
-    //We make a singleton, so where is a private section for constructors and assignment operator
+  //We make a singleton, so where is a private section for constructors and assignment operator
   private:
+
     CWinapiRoot(
       HINSTANCE appInstance,
       bool fullscreen,
@@ -71,31 +74,29 @@ namespace kruz
     /// Window procedure; Calling when a message for this window is dispatched.
     static LRESULT CALLBACK wndProc(HWND window, UINT msg, WPARAM wParam, LPARAM lParam);
     /// Calling by wndProc() in order to recalculate window parameters according to the new size.
-    void handleSizeEvent(GLsizei width, GLsizei height);
+    void handleSizeEvent(unsigned short width, unsigned short height);
     /// Calling by createWindow() after creating the actual window in order to initialize OpenGL and build the font for it.
     void initOpenGL();
     /// Draw the custom mouse cursor.
     void glDrawCursor();
 
   private:
-    static CWinapiRoot* smInstance;
-    static HINSTANCE smAppInstance;
-    static const char* smClassName;
+    static CWinapiRoot* smInstance; ///< Stores Windows application instance.
+    static HINSTANCE smAppInstance; ///< Stores singleton instance.
+    static const char* smClassName; ///< Stores window class name.
 
-    bool mIsRunning;
-    int mErrorCode;
-    IGameStateManager* mStateManager;
-    IEventManager* mEventManager;
-    IGfxManager* mGfxManager;
+    bool mIsRunning; ///< Running flag. Main loop will be terminated if mIsRunning is set to false.
+    int mErrorCode; ///< Stores the error code to return after main loop terminating.
+    IGameStateManager* mStateManager; ///< State manager pointer.
+    IEventManager* mEventManager; ///< Event manager pointer.
+    IGfxManager* mGfxManager; ///< Graphics manager pointer.
 
-    unsigned short mWindowWidth;
-    unsigned short mWindowHeight;
-    bool mFullscreen;
-    HWND mWindow;
-    HDC mDeviceContext;
-    HGLRC mGLContext;
-
-    bool fullscreen;
+    unsigned short mWindowWidth; ///< Stores the main window width.
+    unsigned short mWindowHeight; ///< Stores the main window height.
+    bool mFullscreen; ///< Stores the fullscreen flag.
+    HWND mWindow; ///< Stores native window handler.
+    HDC mDeviceContext; ///< Stores native device context.
+    HGLRC mGLContext; ///< Stores native GL context.
 
     GLuint mFontListsBase; ///< Nubfer of the first display list of sequence of lists used for drawing text.
   };

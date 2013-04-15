@@ -10,6 +10,7 @@ namespace kruz
 
   CGameStateManager::~CGameStateManager()
   {
+    // Clear the stack.
     if (!mStack.empty())
     {
       mStack.top()->deactivate();
@@ -18,6 +19,7 @@ namespace kruz
         mStack.pop();
       }
     }
+    // Unregister states.
     if (!mStates.empty())
     {
       mStates.clear();
@@ -36,6 +38,7 @@ namespace kruz
 
   void CGameStateManager::update()
   {
+    // Update the current state.
     if (!mStack.empty())
     {
       mStack.top()->update();
@@ -44,6 +47,7 @@ namespace kruz
 
   void CGameStateManager::render()
   {
+    // Render the current state.
     if (!mStack.empty())
     {
       mStack.top()->render();
@@ -52,7 +56,7 @@ namespace kruz
 
   void CGameStateManager::registerState(IGameState* state)
   {
-    //TODO:: Force unique states registering or use <set>
+    //TODO:: Force unique states registering.
     mStates[state->getName()] = state;
   }
 

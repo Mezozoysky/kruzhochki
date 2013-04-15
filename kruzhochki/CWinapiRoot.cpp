@@ -99,7 +99,7 @@ namespace kruz
     ShowCursor(true);
 
     //TODO: Delete the window resources, etc.
-    if (fullscreen)
+    if (mFullscreen)
     {
       ChangeDisplaySettings(NULL, 0); // ack to the desktop mode.
     }
@@ -391,7 +391,7 @@ namespace kruz
     return DefWindowProc(window, msg, wParam, lParam);
   }
 
-  void CWinapiRoot::handleSizeEvent(GLsizei width, GLsizei height)
+  void CWinapiRoot::handleSizeEvent(unsigned short width, unsigned short height)
   {
     mWindowWidth = width;
     mWindowHeight = height;

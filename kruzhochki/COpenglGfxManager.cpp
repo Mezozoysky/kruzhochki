@@ -1,5 +1,6 @@
 #include "COpenglGfxManager.h"
 #include <math.h>
+#include <GL\GL.h>
 
 namespace kruz
 {
@@ -14,17 +15,18 @@ namespace kruz
   {
   }
 
-  void COpenglGfxManager::setColor(GLfloat r, GLfloat g, GLfloat b, GLfloat a)
+  void COpenglGfxManager::setColor(float r, float g, float b, float a)
   {
     glColor4f(r, g, b, a);
   }
 
-  void COpenglGfxManager::drawCircle(GLfloat x, GLfloat y, GLfloat r)
+  void COpenglGfxManager::drawCircle(float x, float y, float r)
   {
+    // Drawing the circle by 60 short lines connecting it's points.
     GLfloat angle;
     glPushMatrix();
     glLoadIdentity();
-    glLineWidth(3.0f);
+    glLineWidth(3.0f); // 3-pixels line width.
     glBegin(GL_LINE_LOOP);
       for (int i = 0; i < 60; ++i)
       {
@@ -33,10 +35,6 @@ namespace kruz
       }
     glEnd();
     glPopMatrix();
-  }
-
-  void COpenglGfxManager::drawPointsCounter(unsigned long points)
-  {
   }
 
   void COpenglGfxManager::drawText(const std::string& text, unsigned short x, unsigned short y)

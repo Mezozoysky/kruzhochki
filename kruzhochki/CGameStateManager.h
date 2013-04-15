@@ -8,7 +8,7 @@
 
 namespace kruz
 {
-
+  /// Cross-platform game state manager implementation.
   class CGameStateManager :
     public IGameStateManager
   {
@@ -31,9 +31,9 @@ namespace kruz
     void clearStates();
 
   private:
-    std::string mStartState;
-    std::map<std::string, IGameState*> mStates;
-    std::stack<IGameState*> mStack;
+    std::string mStartState; ///< The starting state name.
+    std::map<std::string, IGameState*> mStates; ///< Map of all registered states.
+    std::stack<IGameState*> mStack; ///< Actual stack.
   };
 
 } // namespace kruz

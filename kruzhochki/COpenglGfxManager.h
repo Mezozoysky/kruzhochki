@@ -5,7 +5,7 @@
 
 namespace kruz
 {
-
+  /// Cross-platform OpenGL-based graphics manager implementation.
   class COpenglGfxManager :
     public IGfxManager
   {
@@ -13,10 +13,9 @@ namespace kruz
     COpenglGfxManager(IRoot* root);
     virtual ~COpenglGfxManager();
 
-    void setColor(GLfloat r, GLfloat g, GLfloat b, GLfloat a = 1.0f);
-    void drawCircle(GLfloat x, GLfloat y, GLfloat r);
-    void drawPointsCounter(unsigned long points);
-    // Wraps the root's glPrintText().
+    void setColor(float r, float g, float b, float a = 1.0f);
+    void drawCircle(float x, float y, float r);
+    // Wraps the root's glPrintText method.
     void drawText(const std::string& text, unsigned short x, unsigned short y);
 
   private:
