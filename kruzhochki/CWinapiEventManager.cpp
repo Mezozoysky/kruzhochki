@@ -15,10 +15,7 @@ namespace kruz
   CWinapiEventManager::~CWinapiEventManager()
   {
     removeAllEventHandlers();
-    if (mEventHandlers)
-    {
-      delete mEventHandlers;
-    }
+    delete mEventHandlers;
   }
 
   void CWinapiEventManager::addEventHandler(IEventHandler* handler)
