@@ -162,7 +162,15 @@ namespace kruz
     // Creating the main window.
     createWindow();
     // Switching to the starting game state.
-    mStateManager->changeState(mStateManager->getStartState());
+    if (mStateManager)
+    {
+      mStateManager->changeState(mStateManager->getStartState());
+    }
+    else
+    {
+      mErrorCode = EC_NULL_STATE_MANAGER;
+      mIsRunning = false;
+    }
 
     MSG msg;
     msg.message = ~WM_QUIT;
@@ -425,9 +433,9 @@ namespace kruz
       0, // Angle of escapement. We don't rotate text, so don't care.
       0, // Orientation angle. Don't care.
       FW_BOLD, /*FW_DONTCARE,*/ // Font weight.
-      false, // Italic.
-      false, // Underline.
-      false, // Strikeout.
+      0, // Italic.
+      0, // Underline.
+      0, // Strikeout.
       ANSI_CHARSET, // Default charset (I guess, it's OK for ASCII).
       OUT_TT_PRECIS, // Optput precision. This one means use TrueType if possible.
       CLIP_DEFAULT_PRECIS, // Use default clipping precision.
@@ -461,7 +469,7 @@ namespace kruz
   void CWinapiRoot::glPrintText(const std::string& text, unsigned short x, unsigned short y)
   {
     char line[256]; // We'll print lines of up to 256 chars.
-    sprintf_s(line, text.c_str()); // Obtaining the line.
+    sprintf_s(line, "%s", text.c_str()); // Obtaining the line.
     line[255] = '\0'; // be on the safe side
 
     //TODO: Translate the window coords into GL-coords.
