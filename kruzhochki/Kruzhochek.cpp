@@ -87,5 +87,5 @@ bool Kruzhochek::contains(unsigned short x, unsigned short y) const
 
 void Kruzhochek::fall(DWORD deltaT)
 {
-  mY += (deltaT / 10) * (mValue + 0.2f); // time * speed = pixels to fall.
+  mY += (deltaT / 10.0f) * (mValue + 0.2f); // time * speed = pixels to fall.
 }
